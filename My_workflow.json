@@ -1,0 +1,188 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "phishing-check",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -460,
+        20
+      ],
+      "id": "7149bd59-3d86-4b5c-9188-a47cd179006a",
+      "name": "Webhook",
+      "webhookId": "6002349f-b70b-4f39-860c-7e00a600c295"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "530c4f89-8831-45ad-9a7f-acd51d87bdf3",
+              "name": "encoded_url",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": "=Buffer.from($json[\"url\"]).toString(\"base64url\")\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -240,
+        20
+      ],
+      "id": "988a5970-7021-496c-aee2-254f3ccc24b1",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "url": "=https://www.virustotal.com/api/v3/urls/{{$json[\"encoded_url\"]}}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-apikey",
+              "value": "12cf3655c52386d0a8c244aa92fcb7aef8033fa475f5bfefeb609ecf61de67de"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        200,
+        20
+      ],
+      "id": "14a55668-6401-455d-8918-7a7fbed6d42a",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $json.data.attributes.last_analysis_stats;\nreturn [{\n  json: {\n    malicious: data.malicious,\n    suspicious: data.suspicious,\n    harmless: data.harmless,\n    undetected: data.undetected\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        420,
+        20
+      ],
+      "id": "0bef7280-6de8-4d2a-acfe-2fc9bedea185",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "fromEmail": "ronnienter@gmail.com",
+        "toEmail": "ronnienter@gmail.com",
+        "subject": "Phishing Check Result",
+        "emailFormat": "text",
+        "text": "=Malicious: {{$json[\"malicious\"]}}\nSuspicious: {{$json[\"suspicious\"]}}\nHarmless: {{$json[\"harmless\"]}}\nUndetected: {{$json[\"undetected\"]}}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        640,
+        20
+      ],
+      "id": "878de2a3-0e60-476b-b19c-3f2890bfe50e",
+      "name": "Send Email",
+      "webhookId": "7a7e246a-79b1-4f9e-be4e-ca5abc1b69ca",
+      "credentials": {
+        "smtp": {
+          "id": "39EyuhOOvwyxkQTv",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const url = $json.body?.suspicious_url;\nif (!url) throw new Error(\"suspicious_url missing\");\nconst encoded = Buffer.from(url).toString('base64').replace(/\\+/g, '-').replace(/\\//g, '_').replace(/=+$/, '');\nreturn { json: { encoded_url: encoded, original_url: url } };\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -20,
+        20
+      ],
+      "id": "3c0b9973-54a1-44f5-bc6e-0991345418fb",
+      "name": "Code1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "36895114-8001-464a-b3fe-5a86a2db9897",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "aa7ea74235d5e154a80db893f0dc754c967c8c48558128bdd846bc5c4f36651c"
+  },
+  "id": "9ihaAtvW0jfENDiC",
+  "tags": []
+}

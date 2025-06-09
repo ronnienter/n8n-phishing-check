@@ -1,0 +1,23 @@
+
+---
+
+### ✅ 3. Export Your Workflow
+
+In n8n:
+- Go to the workflow name (top bar)
+- Click the three dots
+- Choose **"Export" > "Download JSON"**
+- Rename it to `workflow.json` and include it in your repo
+
+---
+
+### ✅ 4. Final Touches
+
+- Create the repo
+- Upload all files
+- Use `git push` or GitHub web interface
+- Add a good description & tags (e.g. `n8n`, `VirusTotal`, `phishing`, `automation`)
+
+---
+
+Let me know when you’re done or want help writing a pinned tweet or LinkedIn post about it.

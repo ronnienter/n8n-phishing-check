@@ -1,0 +1,18 @@
+[
+  {
+    "headers": {
+      "host": "localhost:5678",
+      "user-agent": "curl/8.9.1",
+      "accept": "*/*",
+      "content-type": "application/json",
+      "content-length": "45"
+    },
+    "params": {},
+    "query": {},
+    "body": {
+      "suspicious_url": "http://example.com/phish"
+    },
+    "webhookUrl": "http://localhost:5678/webhook-test/phishing-check",
+    "executionMode": "test"
+  }
+]
