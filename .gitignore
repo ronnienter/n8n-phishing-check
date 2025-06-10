@@ -1,2 +1,3 @@
-n8n-phishing-check.git.bfg-report/ 
-n8n-phishing-check.git/ 
+bfg-*.jar
+*.txt
+n8n-phishing-check.git.bfg-report/
