@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>n8n Phishing URL Checker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem;
+      background-color: #f9f9f9;
+    }
+    h1, h2 {
+      color: #333;
+    }
+    code {
+      background: #eee;
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+    .screenshot {
+      width: 100%;
+      border-radius: 8px;
+      margin: 1rem 0;
+    }
+    pre {
+      background-color: #eee;
+      padding: 1rem;
+      border-radius: 6px;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>🛡️ n8n Phishing URL Checker</h1>
+  <p>
+    This project uses <strong>n8n</strong> and the <strong>VirusTotal API</strong> to determine if a submitted URL is <em>malicious</em>, <em>suspicious</em>, or <em>harmless</em>.
+  </p>
+
+  <h2>🔍 Features</h2>
+  <ul>
+    <li>Accepts URLs via a public webhook</li>
+    <li>Encodes and submits them to VirusTotal</li>
+    <li>Extracts detailed scan results</li>
+    <li>Sends a summarized report to your email</li>
+  </ul>
+
+  <h2>🛠️ Tools Used</h2>
+  <ul>
+    <li>n8n (Self-hosted)</li>
+    <li>VirusTotal API</li>
+    <li>Gmail SMTP</li>
+    <li>cURL for testing</li>
+  </ul>
+
+  <h2>🧰 Workflow Overview</h2>
+  <ol>
+    <li><strong>Webhook</strong> accepts JSON input:
+      <pre>{
+  "suspicious_url": "http://example.com/phish"
+}</pre>
+    </li>
+    <li><strong>Function Node</strong> encodes the URL to base64.</li>
+    <li><strong>HTTP Request</strong> sends encoded URL to VirusTotal:
+      <pre>https://www.virustotal.com/api/v3/urls/{{encoded_url}}</pre>
+    </li>
+    <li><strong>Set Node</strong> extracts malicious, harmless, suspicious, undetected counts.</li>
+    <li><strong>Email Node</strong> sends report to your inbox.</li>
+  </ol>
+
+  <h2>📊 Sample Output</h2>
+  <pre>
+Malicious: 0
+Suspicious: 0
+Harmless: 85
+Undetected: 8
+  </pre>
+
+  <h2>📷 Workflow Diagram</h2>
+<img src="images/flow-diagram.png" alt="n8n Workflow" style="max-width: 100%; height: auto;" />
+
+  <h2>🔄 Try It Locally</h2>
+  <pre>curl -X POST http://localhost:5678/webhook-test/phishing-check \
+  -H "Content-Type: application/json" \
+  -d '{"suspicious_url": "http://example.com/phish"}'
+  </pre>
+
+  <h2>🚰 Setup Notes</h2>
+  <ul>
+    <li>Use Gmail App Passwords (not your main password)</li>
+    <li>VirusTotal has request limits on free accounts</li>
+    <li>Keep API keys secure. Never push secrets to GitHub</li>
+  </ul>
+
+  <footer>
+    <hr />
+    <p>Built with ❤️ by <strong>ronnienter</strong> • <a href="https://github.com/ronnienter/n8n-phishing-check">View Source on GitHub</a></p>
+  </footer>
+</body>
+</html>
